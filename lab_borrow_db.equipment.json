@@ -1,0 +1,38 @@
+[{
+  "_id": {
+    "$oid": "69675af9d1731db60d3c9a44"
+  },
+  "itemName": "Asus 2026",
+  "category": "Computer",
+  "qty": 300,
+  "status": "available",
+  "borrowerName": "",
+  "borrowedBy": null,
+  "borrowedAt": null,
+  "createdAt": {
+    "$date": "2026-01-14T08:59:37.870Z"
+  },
+  "updatedAt": {
+    "$date": "2026-01-14T08:59:37.870Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69675b6ad1731db60d3c9a47"
+  },
+  "itemName": "Hub",
+  "category": "Network",
+  "qty": 20,
+  "status": "available",
+  "borrowerName": "",
+  "borrowedBy": null,
+  "borrowedAt": null,
+  "createdAt": {
+    "$date": "2026-01-14T09:01:30.369Z"
+  },
+  "updatedAt": {
+    "$date": "2026-01-14T09:04:04.822Z"
+  },
+  "__v": 0
+}]

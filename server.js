@@ -8,6 +8,7 @@ app.use(express.json());
 
 app.use("/api/auth", require("./routes/auth.routes"));
 app.use("/api/equipments", require("./routes/equipment.routes"));
+app.use("/api/history", require("./routes/borrowHistory.routes"));
 
 const port = process.env.PORT || 5000;
 app.get("/", (req, res) => {
@@ -20,8 +21,8 @@ app.get("/", (req, res) => {
 connectDB(process.env.MONGO_URI)
   .then(() =>
     app.listen(port, () =>
-      console.log(`Lab Borrow API on http://localhost:${port}`)
-    )
+      console.log(`Lab Borrow API on http://localhost:${port}`),
+    ),
   )
   .catch((err) => {
     console.error(err);

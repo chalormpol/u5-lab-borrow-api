@@ -1,0 +1,32 @@
+[{
+  "_id": {
+    "$oid": "696759d9d1731db60d3c9a39"
+  },
+  "username": "staff1",
+  "displayName": "Staff One",
+  "passwordHash": "$2b$10$3MkJx2lDqcY4dMcfgNlWSuDSjzO9hq8vLhQhirTGTJ6RKwT4Fry1y",
+  "role": "staff",
+  "createdAt": {
+    "$date": "2026-01-14T08:54:49.319Z"
+  },
+  "updatedAt": {
+    "$date": "2026-01-14T08:54:49.319Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69675aa2d1731db60d3c9a40"
+  },
+  "username": "admin1",
+  "displayName": "Admin One",
+  "passwordHash": "$2b$10$1khGokoDF4j9.Itl3ANDceR388vdFfmvKxSsFyMU3cEKcOtKa2kF6",
+  "role": "admin",
+  "createdAt": {
+    "$date": "2026-01-14T08:58:10.495Z"
+  },
+  "updatedAt": {
+    "$date": "2026-01-14T08:58:10.495Z"
+  },
+  "__v": 0
+}]

@@ -1,4 +1,5 @@
 const Equipment = require("../models/equipment.model");
+const BorrowHistory = require("../models/borrowHistory.model");
 exports.list = async (_req, res) => {
   const items = await Equipment.find().sort({ createdAt: -1 }).lean();
   res.json(items);
@@ -18,7 +19,7 @@ exports.update = async (req, res) => {
   const updated = await Equipment.findByIdAndUpdate(
     id,
     { itemName, category, qty: Number(qty) },
-    { new: true }
+    { new: true },
   );
   if (!updated)
     return res.status(404).json({ error: { message: "ไม่พบรายการ" } });
@@ -47,12 +48,22 @@ exports.borrow = async (req, res) => {
       borrowedBy: req.user.id,
       borrowedAt: new Date(),
     },
-    { new: true }
+    { new: true },
   );
   if (!updated)
     return res
       .status(400)
       .json({ error: { message: "รายการนี้ถูกยืมไปแล้ว หรือไม่พบรายการ" } });
+
+  // 🔥 เพิ่มตรงนี้
+  await BorrowHistory.create({
+    equipment: updated._id,
+    borrower: req.user.id,
+    borrowerName,
+    borrowedAt: new Date(),
+    status: "borrowed",
+  });
+
   res.json(updated);
 };
 
@@ -80,5 +91,15 @@ exports.returnEquip = async (req, res) => {
   item.borrowedBy = null;
   item.borrowedAt = null;
   await item.save();
+
+  // 🔥 เพิ่มตรงนี้
+  await BorrowHistory.findOneAndUpdate(
+    { equipment: item._id, status: "borrowed" },
+    {
+      status: "returned",
+      returnedAt: new Date(),
+    },
+  );
+
   res.json(item);
 };
