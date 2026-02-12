@@ -9,6 +9,7 @@ app.use(express.json());
 app.use("/api/auth", require("./routes/auth.routes"));
 app.use("/api/equipments", require("./routes/equipment.routes"));
 app.use("/api/history", require("./routes/borrowHistory.routes"));
+app.use("/api/users", require("./routes/user.routes"));
 
 const port = process.env.PORT || 5000;
 app.get("/", (req, res) => {
