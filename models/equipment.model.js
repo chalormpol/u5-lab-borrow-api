@@ -4,7 +4,7 @@ const equipmentSchema = new mongoose.Schema(
     itemName: { type: String, required: true, trim: true },
     category: {
       type: String,
-      enum: ["Computer", "Network", "Electronics", "Other"],
+      enum: ["Philosophy", "Religion", "Science", "Other"],
       required: true,
     },
     qty: { type: Number, required: true, min: 1 },
@@ -21,6 +21,6 @@ const equipmentSchema = new mongoose.Schema(
     },
     borrowedAt: { type: Date, default: null },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 module.exports = mongoose.model("Equipment", equipmentSchema);
