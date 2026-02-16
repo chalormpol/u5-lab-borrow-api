@@ -105,24 +105,19 @@ exports.returnEquip = async (req, res) => {
     return res.status(400).json({ error: { message: "ไม่พบประวัติการยืม" } });
   }
 
-  // const now = new Date();
-  const borrowDays1 = 9;
-
-  const dueDate1 = new Date();
-  dueDate1.setDate(dueDate1.getDate() + borrowDays1);
+  const now = new Date();
   let overdueDays = 0;
   let fineAmount = 0;
 
   // เช็คเกินกำหนด
-  if (dueDate1 > history.dueDate) {
-    const diffTime = dueDate1 - history.dueDate;
+  if (now > history.dueDate) {
+    const diffTime = now - history.dueDate;
     overdueDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
     fineAmount = overdueDays * FINE_PER_DAY;
   }
 
   // อัปเดต history
-  // history.returnedAt = now;
-  history.returnedAt = dueDate1;
+  history.returnedAt = now;
   history.overdueDays = overdueDays;
   history.fineAmount = fineAmount;
   history.status = overdueDays > 0 ? "overdue" : "returned";
