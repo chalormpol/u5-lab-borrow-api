@@ -4,13 +4,13 @@ const requireRole = require("../middlewares/role.middleware");
 const auth = require("../middlewares/auth.middleware");
 
 // ดูประวัติทั้งหมด
-router.get("/", auth, requireRole(["admin", "users"]), historyCtrl.list);
+router.get("/", auth, requireRole(["admin", "user"]), historyCtrl.list);
 
 // ดูประวัติของอุปกรณ์ตัวเดียว
 router.get(
   "/equipment/:equipmentId",
   auth,
-  requireRole(["admin", "users"]),
+  requireRole(["admin", "user"]),
   historyCtrl.listByEquipment,
 );
 
