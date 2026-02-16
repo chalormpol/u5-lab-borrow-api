@@ -55,12 +55,18 @@ exports.borrow = async (req, res) => {
       .status(400)
       .json({ error: { message: "รายการนี้ถูกยืมไปแล้ว หรือไม่พบรายการ" } });
 
+  const borrowDays = 7;
+
+  const dueDate = new Date();
+  dueDate.setDate(dueDate.getDate() + borrowDays);
+
   // 🔥 เพิ่มตรงนี้
   await BorrowHistory.create({
     equipment: updated._id,
     borrower: req.user.id,
     borrowerName,
     borrowedAt: new Date(),
+    dueDate,
     status: "borrowed",
   });
 
@@ -70,9 +76,11 @@ exports.borrow = async (req, res) => {
 // คืน: admin คืนได้ทุกอัน / staff คืนได้เฉพาะของตัวเอง
 exports.returnEquip = async (req, res) => {
   const { id } = req.params;
+  const FINE_PER_DAY = 10;
 
   const item = await Equipment.findById(id);
   if (!item) return res.status(404).json({ error: { message: "ไม่พบรายการ" } });
+
   if (item.status === "available")
     return res
       .status(400)
@@ -86,20 +94,46 @@ exports.returnEquip = async (req, res) => {
       .status(403)
       .json({ error: { message: "คุณคืนได้เฉพาะรายการที่คุณยืม" } });
   }
+
+  // 🔥 หา history ที่ยังไม่คืน
+  const history = await BorrowHistory.findOne({
+    equipment: item._id,
+    status: "borrowed",
+  });
+
+  if (!history) {
+    return res.status(400).json({ error: { message: "ไม่พบประวัติการยืม" } });
+  }
+
+  const now = new Date();
+  let overdueDays = 0;
+  let fineAmount = 0;
+
+  // เช็คเกินกำหนด
+  if (now > history.dueDate) {
+    const diffTime = now - history.dueDate;
+    overdueDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    fineAmount = overdueDays * FINE_PER_DAY;
+  }
+
+  // อัปเดต history
+  history.returnedAt = now;
+  history.overdueDays = overdueDays;
+  history.fineAmount = fineAmount;
+  history.status = overdueDays > 0 ? "overdue" : "returned";
+
+  await history.save();
+
+  // รีเซ็ต equipment
   item.status = "available";
   item.borrowerName = "";
   item.borrowedBy = null;
   item.borrowedAt = null;
   await item.save();
 
-  // 🔥 เพิ่มตรงนี้
-  await BorrowHistory.findOneAndUpdate(
-    { equipment: item._id, status: "borrowed" },
-    {
-      status: "returned",
-      returnedAt: new Date(),
-    },
-  );
-
-  res.json(item);
+  res.json({
+    item,
+    overdueDays,
+    fineAmount,
+  });
 };

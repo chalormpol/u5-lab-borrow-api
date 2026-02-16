@@ -7,7 +7,6 @@ const Equipment = require("../models/equipment.model");
 exports.list = async (req, res) => {
   try {
     const isAdmin = req.user.role === "admin";
-
     const filter = isAdmin ? {} : { borrower: req.user.id };
 
     const history = await BorrowHistory.find(filter)
@@ -16,7 +15,27 @@ exports.list = async (req, res) => {
       .sort({ createdAt: -1 })
       .lean();
 
-    res.json(history);
+    const now = new Date();
+    const FINE_PER_DAY = 10;
+
+    const formatted = history.map((item) => {
+      if (item.status === "borrowed" && item.dueDate && now > item.dueDate) {
+        const diffDays = Math.ceil(
+          (now - new Date(item.dueDate)) / (1000 * 60 * 60 * 24),
+        );
+
+        return {
+          ...item,
+          status: "overdue",
+          overdueDays: diffDays,
+          fineAmount: diffDays * FINE_PER_DAY,
+        };
+      }
+
+      return item;
+    });
+
+    res.json(formatted);
   } catch (err) {
     res.status(500).json({ error: { message: err.message } });
   }
@@ -34,7 +53,27 @@ exports.listByEquipment = async (req, res) => {
       .sort({ borrowedAt: -1 })
       .lean();
 
-    res.json(history);
+    const now = new Date();
+    const FINE_PER_DAY = 10;
+
+    const formatted = history.map((item) => {
+      if (item.status === "borrowed" && item.dueDate && now > item.dueDate) {
+        const diffDays = Math.ceil(
+          (now - new Date(item.dueDate)) / (1000 * 60 * 60 * 24),
+        );
+
+        return {
+          ...item,
+          status: "overdue",
+          overdueDays: diffDays,
+          fineAmount: diffDays * FINE_PER_DAY,
+        };
+      }
+
+      return item;
+    });
+
+    res.json(formatted);
   } catch (err) {
     res.status(500).json({ error: { message: err.message } });
   }
