@@ -116,8 +116,14 @@ exports.returnEquip = async (req, res) => {
     fineAmount = overdueDays * FINE_PER_DAY;
   }
 
+  const borrowDays1 = 9;
+
+  const dueDate1 = new Date();
+  dueDate1.setDate(dueDate1.getDate() + borrowDays1);
+
   // อัปเดต history
-  history.returnedAt = now;
+  // history.returnedAt = now;
+  history.returnedAt = dueDate1;
   history.overdueDays = overdueDays;
   history.fineAmount = fineAmount;
   history.status = overdueDays > 0 ? "overdue" : "returned";
