@@ -2,7 +2,7 @@ const BorrowHistory = require("../models/borrowHistory.model");
 const Equipment = require("../models/equipment.model");
 
 /**
- * 📌 ดูประวัติทั้งหมด (admin ดูได้ทั้งหมด / staff ดูของตัวเอง)
+ * 📌 ดูประวัติทั้งหมด (admin ดูได้ทั้งหมด / user ดูของตัวเอง)
  */
 exports.list = async (req, res) => {
   try {
@@ -26,7 +26,7 @@ exports.list = async (req, res) => {
 
         return {
           ...item,
-          status: "overdue",
+          status: "returned",
           overdueDays: diffDays,
           fineAmount: diffDays * FINE_PER_DAY,
         };
@@ -64,7 +64,7 @@ exports.listByEquipment = async (req, res) => {
 
         return {
           ...item,
-          status: "overdue",
+          status: "returned",
           overdueDays: diffDays,
           fineAmount: diffDays * FINE_PER_DAY,
         };

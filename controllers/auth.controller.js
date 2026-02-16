@@ -5,7 +5,7 @@ function signToken(user) {
   return jwt.sign(
     { sub: user._id.toString(), role: user.role },
     process.env.JWT_SECRET,
-    { expiresIn: process.env.JWT_EXPIRES || "1d" }
+    { expiresIn: process.env.JWT_EXPIRES || "1d" },
   );
 }
 
@@ -22,7 +22,7 @@ exports.register = async (req, res) => {
     username: username.toLowerCase(),
     displayName,
     passwordHash,
-    role: "staff",
+    role: "user",
   });
 
   const token = signToken(user);
@@ -68,7 +68,7 @@ exports.login = async (req, res) => {
 
 exports.me = async (req, res) => {
   const user = await User.findById(req.user.id).select(
-    "username displayName role"
+    "username displayName role",
   );
   if (!user) return res.status(404).json({ error: { message: "ไม่พบผู้ใช้" } });
   res.json({

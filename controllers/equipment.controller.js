@@ -34,7 +34,7 @@ exports.remove = async (req, res) => {
     return res.status(404).json({ error: { message: "ไม่พบรายการ" } });
   res.json({ ok: true });
 };
-// staff/admin ยืมได้
+// user/admin ยืมได้
 exports.borrow = async (req, res) => {
   const { id } = req.params;
   const borrowerName = String(req.body?.borrowerName || "").trim();
@@ -73,7 +73,7 @@ exports.borrow = async (req, res) => {
   res.json(updated);
 };
 
-// คืน: admin คืนได้ทุกอัน / staff คืนได้เฉพาะของตัวเอง
+// คืน: admin คืนได้ทุกอัน / user คืนได้เฉพาะของตัวเอง
 exports.returnEquip = async (req, res) => {
   const { id } = req.params;
   const FINE_PER_DAY = 10;
@@ -120,7 +120,7 @@ exports.returnEquip = async (req, res) => {
   history.returnedAt = now;
   history.overdueDays = overdueDays;
   history.fineAmount = fineAmount;
-  history.status = overdueDays > 0 ? "overdue" : "returned";
+  history.status = "returned";
 
   await history.save();
 
